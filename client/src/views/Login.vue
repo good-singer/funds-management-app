@@ -2,7 +2,7 @@
   <div class="login">
     <div class="form_container">
       <div class="manage_tip">
-        <span class="title">在线后台在线管理系统</span>
+        <span class="title">Y在线后台管理系统</span>
         <el-form :model="loginUser" :rules="rules" ref="loginForm" label-width="80px"   class="loginForm">
 
           <el-form-item label="邮箱" prop="email">

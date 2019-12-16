@@ -36,4 +36,8 @@ body,
   width: 100%;
   height: 100%;
 }
+/* 解决表头与内容列不对齐问题 */
+.el-table th.gutter{
+  display: table-cell !important;
+}
 </style>

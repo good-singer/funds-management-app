@@ -37,9 +37,9 @@ body,
   height: 100%;
 }
 /* 解决表头与内容列不对齐问题 */
-/* .el-table th.gutter{
+.el-table th.gutter{
   display: table-cell !important;
-} */
+}
 /* ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

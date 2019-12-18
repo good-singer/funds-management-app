@@ -99,6 +99,23 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="pagination">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="paginations.page_index"
+              :page-sizes="paginations.page_sizes"
+              :page-size="paginations.page_size"
+              :layout="paginations.layout"
+              :total="paginations.total">
+            </el-pagination>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
     <CustomDialog :dialog="dialog" :formData="formData" @update="getProfile"></CustomDialog>
@@ -111,6 +128,13 @@ export default {
   name: "fundlist",
   data(){
     return {
+      paginations: {
+        page_index: 1, // 当前位于哪页
+        total: 0, // 总数
+        page_size: 5, // 一页显示多少条
+        page_sizes: [5,10,15,20], // 每页显示多少条
+        layout: "total, sizes, prev, next, jumper" // 翻页属性
+      },
       tableData: [],
       formData:{
         type: "",
@@ -186,6 +210,12 @@ export default {
         id: ""
       }
       this.dialog.show = true;
+    },
+    handleSizeChange(page_size){
+
+    },
+    handleCurrentChange(page){
+      
     }
   },
   components: {
@@ -207,5 +237,9 @@ export default {
 }
 .btnRight{
   float: right;
+}
+.pagination{
+  text-align: right;
+  margin-top: 10px;
 }
 </style>

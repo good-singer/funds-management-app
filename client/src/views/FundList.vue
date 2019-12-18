@@ -1,12 +1,36 @@
 <template>
   <div class="fillContainer">
     <div>
-      <el-form :inline="true" ref="add_data">
+      <el-form :inline="true" ref="add_data" :model="search_data">
+        <!-- 筛选 -->
+        <el-form-item label="按照时间筛选:">
+          <el-date-picker
+            v-model="search_data.startTime"
+            type="datetime"
+            placeholder="选择开始时间"
+          >
+          </el-date-picker>
+          <el-date-picker
+            v-model="search_data.endTime"
+            type="datetime"
+            placeholder="选择结束时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button 
+            type="primary"
+            size="small" 
+            icon="search" 
+            @click="handleSearch()"
+          >筛选</el-button>
+        </el-form-item>
         <el-form-item class="btnRight">
           <el-button 
             type="primary"
             size="small" 
             icon="view" 
+            v-if="user.identity == 'manager'"
             @click="handleAdd()"
           >添加</el-button>
         </el-form-item>
@@ -84,6 +108,7 @@
         <el-table-column 
             prop="operation"
             label="操作" 
+            v-if="user.identity == 'manager'"
             align='center'>
           <template slot-scope="scope">
             <el-button
@@ -128,6 +153,11 @@ export default {
   name: "fundlist",
   data(){
     return {
+      search_data: {
+        startTime: "",
+        endTime: ""
+      },
+      filterTableData: [],
       paginations: {
         page_index: 1, // 当前位于哪页
         total: 0, // 总数
@@ -153,6 +183,11 @@ export default {
       }
     }
   },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
   created() {
     this.getProfile();
   },
@@ -163,6 +198,7 @@ export default {
         .get('/api/profiles')
         .then(res => {
           this.allTableData = res.data;
+          this.filterTableData = res.data;
           // 设置分页数据
           this.setPaginations();
           // console.log(this.tableData)
@@ -257,6 +293,29 @@ export default {
       this.tableData = table.filter((item, index) => {
         return index < this.paginations.page_size;
       });
+    },
+    handleSearch(){
+      // 筛选
+      if(!this.search_data.startTime || !this.search_data.endTime){
+        this.$message({
+          type: "warning",
+          message: "请选择时间区间"
+        });
+        this.getProfile();
+        return;
+      }
+
+      const sTime = this.search_data.startTime.getTime();
+      const eTime = this.search_data.endTime.getTime();
+
+      this.allTableData = this.filterTableData.filter(item => {
+        let date = new Date(item.date);
+        let time = date.getTime();
+        return time >= sTime && time <= eTime;
+      });
+
+      // 分页数据
+      this.setPaginations();
     }
   },
   components: {
